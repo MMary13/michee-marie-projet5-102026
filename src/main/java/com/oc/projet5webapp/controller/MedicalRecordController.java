@@ -2,7 +2,6 @@ package com.oc.projet5webapp.controller;
 
 
 import com.oc.projet5webapp.model.MedicalRecord;
-import com.oc.projet5webapp.model.Person;
 import com.oc.projet5webapp.service.MedicalRecordService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
