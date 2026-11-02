@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 public class Person {
+
     @NotBlank(message = "First name is required")
     private String firstName;
 
