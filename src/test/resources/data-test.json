@@ -1,0 +1,84 @@
+{
+  "persons" : [   {
+    "firstName": "Marie",
+    "lastName": "Michee",
+    "address": "10 rue de Paris",
+    "city": "Lannion",
+    "zip": "22300",
+    "phone": "0600000000",
+    "email": "marie@example.com"
+  },   {
+    "firstName": "John",
+    "lastName": "Doe",
+    "address": "25 rue de Paris",
+    "city": "Paris",
+    "zip": "75000",
+    "phone": "0699999999",
+    "email": "johndoe@example.com"
+  },  {
+    "firstName" : "Sophia",
+    "lastName" : "Zemicks",
+    "address" : "892 Downing Ct",
+    "city" : "Culver",
+    "zip" : "97451",
+    "phone" : "841-874-7878",
+    "email" : "soph@email.com"
+  }, {
+    "firstName" : "Warren",
+    "lastName" : "Zemicks",
+    "address" : "892 Downing Ct",
+    "city" : "Culver",
+    "zip" : "97451",
+    "phone" : "841-874-7512",
+    "email" : "ward@email.com"
+  }, {
+    "firstName" : "Zach",
+    "lastName" : "Zemicks",
+    "address" : "892 Downing Ct",
+    "city" : "Culver",
+    "zip" : "97451",
+    "phone" : "841-874-7512",
+    "email" : "zarc@email.com"
+  }],
+  "firestations" : [ {
+    "address" : "1509 Culver St",
+    "station" : 3
+  }, {
+    "address" : "29 15th St",s
+    "station" : 2
+  }, {
+    "address" : "892 Downing Ct",
+    "station" : 4
+  } ],
+  "medicalrecords" : [ {
+    "firstName" : "John",
+    "lastName" : "Doe",
+    "birthdate" : "03/06/1984",
+    "medications" : [ "aznol:350mg", "hydrapermazol:100mg" ],
+    "allergies" : [ "nillacilan" ]
+  }, {
+    "firstName" : "Marie",
+    "lastName" : "Michee",
+    "birthdate" : "03/06/1989",
+    "medications" : [ "pharmacol:5000mg", "terazine:10mg", "noznazol:250mg" ],
+    "allergies" : [ ]
+  }, {
+    "firstName" : "Sophia",
+    "lastName" : "Zemicks",
+    "birthdate" : "03/06/1988",
+    "medications" : [ "aznol:60mg", "hydrapermazol:900mg", "pharmacol:5000mg", "terazine:500mg" ],
+    "allergies" : [ "peanut", "shellfish", "aznol" ]
+  }, {
+    "firstName" : "Warren",
+    "lastName" : "Zemicks",
+    "birthdate" : "03/06/1985",
+    "medications" : [ ],
+    "allergies" : [ ]
+  }, {
+    "firstName" : "Zach",
+    "lastName" : "Zemicks",
+    "birthdate" : "03/06/2017",
+    "medications" : [ ],
+    "allergies" : [ ]
+  } ]
+}
