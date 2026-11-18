@@ -2,6 +2,7 @@ package com.oc.projet5webapp.service;
 
 import com.oc.projet5webapp.model.Person;
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
@@ -19,10 +20,12 @@ import java.util.Optional;
 public class PersonService {
 
     private final ObjectMapper objectMapper;
-    private final Path dataFile = Path.of("data.json");
 
-    public PersonService(ObjectMapper objectMapper) {
+    private final Path dataFile;
+
+    public PersonService(ObjectMapper objectMapper, @Value("${app.data-file}") String dataFilePath) {
         this.objectMapper = objectMapper;
+        this.dataFile = Path.of(dataFilePath);
     }
 
     /**
@@ -47,6 +50,23 @@ public class PersonService {
         updatePersonsNodeInFile(persons);
 
         return person;
+    }
+
+    /**
+     * Get list of persons filter by an address from JSON data file.
+     *
+     * @param address the address to filter on
+     * @return the list of filtered persons
+     */
+    public List<Person> getPersons(String address) {
+        List<Person> persons = new ArrayList<>();
+        List<Person> allPersons = readPersons();
+        for (Person person : allPersons) {
+            if (address.equals(person.getAddress())) {
+                persons.add(person);
+            }
+        }
+        return persons;
     }
 
     /**

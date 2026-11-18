@@ -3,6 +3,7 @@ package com.oc.projet5webapp.service;
 
 import com.oc.projet5webapp.model.MedicalRecord;
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
@@ -21,10 +22,12 @@ public class MedicalRecordService {
 
 
     private final ObjectMapper objectMapper;
-    private final Path dataFile = Path.of("data.json");
 
-    public MedicalRecordService(ObjectMapper objectMapper) {
+    private final Path dataFile;
+
+    public MedicalRecordService(ObjectMapper objectMapper,  @Value("${app.data-file}") String dataFilePath) {
         this.objectMapper = objectMapper;
+        this.dataFile = Path.of(dataFilePath);
     }
 
     /**
@@ -47,6 +50,15 @@ public class MedicalRecordService {
         // update dataFile
         updateMedicalRecordInNodeFile(medicalRecords);
         return medicalRecord;
+    }
+
+    /**
+     * Get all Medical Records available in the file
+     *
+     * @return List<MedicalRecord>
+     */
+    public List<MedicalRecord> getMedicalRecords() {
+        return readMedicalRecords();
     }
 
     /**

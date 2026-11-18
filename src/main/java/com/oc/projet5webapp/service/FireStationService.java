@@ -1,7 +1,12 @@
 package com.oc.projet5webapp.service;
 
+import com.oc.projet5webapp.dto.FireStationPerson;
+import com.oc.projet5webapp.dto.FireStationResponse;
 import com.oc.projet5webapp.model.FireStation;
+import com.oc.projet5webapp.model.MedicalRecord;
+import com.oc.projet5webapp.model.Person;
 import jakarta.annotation.Nonnull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
@@ -10,19 +15,71 @@ import tools.jackson.databind.node.ObjectNode;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
 
 @Service
 public class FireStationService {
 
     private final ObjectMapper objectMapper;
-    private final Path dataFile = Path.of("data.json");
+    private final PersonService personService;
+    private final MedicalRecordService medicalRecordService;
+    private final Path dataFile;
 
-    public FireStationService(ObjectMapper objectMapper) {
+
+    public FireStationService(ObjectMapper objectMapper, PersonService personService,
+                              MedicalRecordService medicalRecordService, @Value("${app.data-file}") String dataFilePath) {
+
         this.objectMapper = objectMapper;
+        this.personService = personService;
+        this.medicalRecordService = medicalRecordService;
+        this.dataFile = Path.of(dataFilePath);
+    }
+
+    public FireStationResponse getPersonsForOneStation(int stationNumber) {
+        // get the addresses from the station number
+        List<String> addresses = getStationAddresses(stationNumber);
+        // get a list of persons for these addresses
+        List<Person> persons = addresses.stream()
+                .flatMap(address -> personService.getPersons(address).stream())
+                .toList();
+
+        // get all medical records
+        List<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecords();
+        List<FireStationPerson> stationPersons = new ArrayList<>();
+
+        int adultCount = 0;
+        int childCount = 0;
+
+        for (Person person : persons) {
+
+            stationPersons.add(new FireStationPerson(
+                    person.getFirstName(),
+                    person.getLastName(),
+                    person.getAddress(),
+                    person.getPhone()
+            ));
+
+            Optional<MedicalRecord> medicalRecord = medicalRecords.stream()
+                    .filter(medRecord ->
+                            medRecord.getFirstName().equals(person.getFirstName())
+                                    && medRecord.getLastName().equals(person.getLastName()))
+                    .findFirst();
+
+            if (medicalRecord.isPresent() && medicalRecord.get().getBirthdate() != null) {
+
+                int age = Period.between(medicalRecord.get().getBirthdate(), LocalDate.now()).getYears();
+
+                if (age <= 18) {
+                    childCount++;
+                } else {
+                    adultCount++;
+                }
+            }
+        }
+
+        return new FireStationResponse(stationPersons, adultCount, childCount);
     }
 
     /**
@@ -52,7 +109,7 @@ public class FireStationService {
      *
      * @param fireStation the fire station containing the updated number station
      * @return an Optional containing the updated fire station,
-     *         or an empty Optional if no matching fire station exists
+     * or an empty Optional if no matching fire station exists
      * @throws NullPointerException if fire station is null
      */
     public Optional<FireStation> updateFireStation(@Nonnull FireStation fireStation) {
@@ -62,7 +119,11 @@ public class FireStationService {
         List<FireStation> fireStations = readFireStations();
 
         // Search for the fire station
-        Optional<FireStation> existingFireStation = findFireStation(fireStations, fireStation.getAddress(), fireStation.getStation());
+        Optional<FireStation> existingFireStation = fireStations.stream()
+                .filter(f -> Objects.equals(
+                        f.getAddress(), fireStation.getAddress()))
+                .findFirst();
+
         if (existingFireStation.isEmpty()) {
             return Optional.empty();
         }
@@ -71,7 +132,7 @@ public class FireStationService {
         fireStationToUpdate.setStation(fireStation.getStation());
 
         //Update file
-       updateFireStationInNodeFile(fireStations);
+        updateFireStationInNodeFile(fireStations);
 
         return Optional.of(fireStationToUpdate);
     }
@@ -79,7 +140,7 @@ public class FireStationService {
     /**
      * Deletes a fire station identified by its address and station number.
      *
-     * @param address the address of the fire station to delete
+     * @param address       the address of the fire station to delete
      * @param stationNumber the station number of the fire station to delete
      * @return true if a fire station was deleted, false if no matching fire station exists
      */
@@ -144,6 +205,16 @@ public class FireStationService {
         objectMapper
                 .writerWithDefaultPrettyPrinter()
                 .writeValue(file, root);
+    }
+
+    private List<String> getStationAddresses(int stationNumber) {
+        List<FireStation> fireStations = readFireStations();
+
+        return fireStations.stream()
+                .filter(f -> Objects.equals(f.getStation(), stationNumber))
+                .map(FireStation::getAddress)
+                .distinct()
+                .toList();
     }
 
 }

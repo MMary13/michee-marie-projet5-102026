@@ -1,11 +1,12 @@
 package com.oc.projet5webapp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,8 +23,8 @@ public class MedicalRecord {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @NotBlank(message = "Birthdate is required")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull(message = "Birthdate is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     private LocalDate birthdate;
 
     private List<String> medications;

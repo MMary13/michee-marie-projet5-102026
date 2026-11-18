@@ -1,5 +1,6 @@
 package com.oc.projet5webapp.controller;
 
+import com.oc.projet5webapp.dto.FireStationResponse;
 import com.oc.projet5webapp.model.FireStation;
 import com.oc.projet5webapp.service.FireStationService;
 import jakarta.validation.Valid;
@@ -18,6 +19,21 @@ public class FireStationController {
         this.fireStationService = fireStationService;
     }
 
+
+    /**
+     * Get all persons covered by a fire station, along with the number of adults and children.
+     *
+     * @param stationNumber the fire station number
+     * @return a ResponseEntity containing the persons covered by the station,
+     *         the adult count and the child count
+     */
+    @GetMapping
+    public ResponseEntity<FireStationResponse> getPersonsForOneStation(
+            @RequestParam int stationNumber) {
+
+        FireStationResponse response = fireStationService.getPersonsForOneStation(stationNumber);
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * Create a new fire station.

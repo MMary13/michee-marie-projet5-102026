@@ -1,6 +1,7 @@
 package com.oc.projet5webapp.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,6 @@ public class FireStation {
     @NotBlank(message = "Address is required")
     private String address;
 
-    @NotBlank(message = "Station is required")
+    @NotNull(message = "Station is required")
     private int station;
 }
